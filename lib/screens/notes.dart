@@ -48,7 +48,7 @@ class _NotesScreenState extends State<NotesScreen> {
                   await sqlHelper.updatePositions(true, newIndex, oldIndex);
                 } else if (oldIndex < newIndex) {
                   // bug fix:removing the item at oldIndex will shorten the list by 1.
-                  newIndex -= 1;
+                  // newIndex -= 1;
                   await sqlHelper.updatePositions(false, oldIndex, newIndex);
                 }
                 note.position = newIndex;
@@ -100,6 +100,6 @@ class _NotesScreenState extends State<NotesScreen> {
   Future<List<Note>> getNotes() async {
     sqlHelper = SqlHelper();
     List<Note> notes = await sqlHelper.getNotes();
-    return notes ?? [];
+    return notes;
   }
 }

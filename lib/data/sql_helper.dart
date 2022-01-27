@@ -12,7 +12,8 @@ class SqlHelper {
   final String colPosition = 'position';
   final String tableNotes = 'notes';
 
-  late Database _db;
+  // Database but keep getting late initalization errors
+  Object _db = 1;
   final int _version = 1;
   static SqlHelper _singleton = SqlHelper._internal();
 
@@ -25,7 +26,10 @@ class SqlHelper {
   Future init() async {
     Directory dir = await getApplicationDocumentsDirectory();
     String dbPath = join(dir.path, 'notes.db');
-    _db = await openDatabase(dbPath, version: _version, onCreate: _createDb);
+    if (_db == 1) {
+      _db = await openDatabase(dbPath, version: _version, onCreate: _createDb);
+    }
+    return _db;
   }
 
   Future _createDb(Database db, int version) async {
@@ -35,27 +39,32 @@ class SqlHelper {
   }
 
   Future<int> insertNote(Note note) async {
+    if (_db == 1) {
+      await init();
+    }
     note.position = await findPosition();
-    int result = await _db.insert(tableNotes, note.toMap());
+    int result = await (_db as Database).insert(tableNotes, note.toMap());
     return result;
   }
 
   Future<int> updateNote(Note note) async {
-    int result = await _db.update(tableNotes, note.toMap(),
+    if (_db == 1) await init();
+    int result = await (_db as Database).update(tableNotes, note.toMap(),
         where: '$colId = ?', whereArgs: [note.id]);
     return result;
   }
 
   Future<int> deleteNote(Note note) async {
-    int result =
-        await _db.delete(tableNotes, where: '$colId = ?', whereArgs: [note.id]);
+    if (_db == 1) await init();
+    int result = await (_db as Database)
+        .delete(tableNotes, where: '$colId = ?', whereArgs: [note.id]);
     return result;
   }
 
   Future<List<Note>> getNotes() async {
-    if (_db == null) await init();
+    if (_db == 1) await init();
     List<Map<String, dynamic>> notesList =
-        await _db.query(tableNotes, orderBy: colPosition);
+        await (_db as Database).query(tableNotes, orderBy: colPosition);
     List<Note> notes = [];
     notesList.forEach((element) {
       notes.add(Note.fromMap(element));
@@ -64,14 +73,16 @@ class SqlHelper {
   }
 
   Future<int> findPosition() async {
+    if (_db == 1) await init();
     final String sql = 'select max($colPosition) from $tableNotes';
-    List<Map> queryResult = await _db.rawQuery(sql);
-    int position = queryResult.first.values.first;
+    List<Map> queryResult = await (_db as Database).rawQuery(sql);
+    int? position = queryResult.first.values.first;
     position = (position == null) ? 0 : position++;
     return position;
   }
 
   Future updatePositions(bool increment, int start, int end) async {
+    if (_db == 1) await init();
     String sql;
     if (increment) {
       sql =
@@ -80,6 +91,6 @@ class SqlHelper {
       sql =
           'update $tableNotes set $colPosition = $colPosition - 1  where $colPosition >= $start and $colPosition <= $end';
     }
-    await _db.rawUpdate(sql);
+    await (_db as Database).rawUpdate(sql);
   }
 }

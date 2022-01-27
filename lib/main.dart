@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:global_traveler_app/screens/home.dart';
-import 'package:global_traveler_app/screens/settings.dart';
 // import 'package:travel_app/data/sharedprefs.dart';
 // import 'package:travel_app/settings.dart';
 
