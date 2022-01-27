@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:global_traveler_app/data/moor_db.dart';
 import 'package:global_traveler_app/screens/home.dart';
+import 'package:provider/provider.dart';
 // import 'package:travel_app/data/sharedprefs.dart';
 // import 'package:travel_app/settings.dart';
 
@@ -13,14 +15,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // SPSettings settings = SPSettings();
 
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          fontFamily: 'Raleway',
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        // home: const SettingsScreen(),
-        home: HomeScreen());
+    return Provider(
+      create: (context) => BlogDb(),
+      child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            fontFamily: 'Raleway',
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          // home: const SettingsScreen(),
+          home: HomeScreen()),
+    );
   }
 }
