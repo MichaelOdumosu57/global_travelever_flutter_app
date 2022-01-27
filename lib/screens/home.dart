@@ -3,6 +3,7 @@ import 'package:global_traveler_app/screens/posts.dart';
 import '../data/shared_prefs.dart';
 import '../screens/passwords.dart';
 import '../screens/settings.dart';
+import 'files.dart';
 import 'notes.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -99,6 +100,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.pop(context);
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => PostsScreen()));
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    'Files',
+                    style: TextStyle(
+                      fontSize: fontSize,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => FilesScreen()));
                   },
                 ),
               ],
